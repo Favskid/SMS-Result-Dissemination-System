@@ -1,4 +1,5 @@
 <?php
+
 /**
  * config.php
  * Central configuration for the Student Academic Result Dissemination System
@@ -18,10 +19,24 @@ define('DB_USER', getenv('DB_USER') ?: 'root');
 define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
 define('DB_CHARSET', getenv('DB_CHARSET') ?: 'utf8mb4');
 
+// ─── Load .env file manually if it exists ────────────────────────────────────
+$envFile = dirname(__DIR__) . '/.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        if (strpos($line, '=') !== false) {
+            list($name, $value) = explode('=', $line, 2);
+            putenv(trim($name) . '=' . trim($value));
+        }
+    }
+}
+
 // ─── Twilio SMS Configuration ──────────────────────────────────────────────
-define('TWILIO_SID',   getenv('TWILIO_SID')   ?: (getenv('TWILIO_ACCOUNT_SID')  ?: ''));
-define('TWILIO_TOKEN', getenv('TWILIO_TOKEN') ?: (getenv('TWILIO_AUTH_TOKEN')    ?: ''));
-define('TWILIO_PHONE', getenv('TWILIO_PHONE') ?: (getenv('TWILIO_PHONE_NUMBER')  ?: ''));
+// Now safely fetching from .env file!
+define('TWILIO_SID',   getenv('TWILIO_SID')   ?: '');
+define('TWILIO_TOKEN', getenv('TWILIO_TOKEN') ?: '');
+define('TWILIO_PHONE', getenv('TWILIO_PHONE') ?: '');
 
 // ─── Application Constants ─────────────────────────────────────────────────
 define('APP_NAME',    'FULafia Result System');
