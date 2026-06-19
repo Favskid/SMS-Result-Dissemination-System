@@ -1,0 +1,9 @@
+{
+    "name": "fulafia/student-result-sms",
+    "description": "Student Academic Result Dissemination System via SMS - Federal University of Lafia",
+    "require": {
+        "php": ">=8.0",
+        "twilio/sdk": "^8.0",
+        "phpoffice/phpspreadsheet": "^2.0"
+    }
+}
