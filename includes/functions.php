@@ -1,4 +1,5 @@
 <?php
+
 /**
  * includes/functions.php
  * Shared helper functions used across the entire application.
@@ -177,12 +178,13 @@ function buildResultSMS(array $student, array $results, string $semester, string
 }
 
 /**
- * Send an SMS via Twilio and log the outcome in the sms_logs table.
+ * Send an SMS via Twilio and log the outcome .
  *
  * @return array{success: bool, message: string}
  */
 function sendSMS(int $studentId, string $toPhone, string $body): array
 {
+    /*
     // Guard: check Twilio credentials are configured
     if (empty(TWILIO_SID) || empty(TWILIO_TOKEN) || empty(TWILIO_PHONE)) {
         logSMS($studentId, $body, 'failed', null);
@@ -206,10 +208,73 @@ function sendSMS(int $studentId, string $toPhone, string $body): array
 
         logSMS($studentId, $body, 'sent', $msg->sid);
         return ['success' => true, 'message' => 'SMS sent successfully (SID: ' . $msg->sid . ')'];
-
     } catch (\Exception $e) {
         logSMS($studentId, $body, 'failed', null);
         return ['success' => false, 'message' => 'Twilio error: ' . $e->getMessage()];
+    }
+    */
+
+    // Guard: check Infobip credentials
+    if (empty(INFOBIP_API_KEY) || empty(INFOBIP_BASE_URL)) {
+        logSMS($studentId, $body, 'failed', null);
+        return ['success' => false, 'message' => 'Infobip credentials not configured. Set INFOBIP_API_KEY and INFOBIP_BASE_URL.'];
+    }
+
+    try {
+        $curl = curl_init();
+        $payload = [
+            'messages' => [
+                [
+                    'destinations' => [
+                        ['to' => ltrim($toPhone, '+')] // Infobip prefers numbers without + depending on sender, but it usually handles it.
+                    ],
+                    'sender' => INFOBIP_SENDER,
+                    'content' => [
+                        'text' => $body
+                    ]
+                ]
+            ]
+        ];
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => rtrim(INFOBIP_BASE_URL, '/') . '/sms/3/messages',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_HTTPHEADER => array(
+                'Authorization: App ' . INFOBIP_API_KEY,
+                'Content-Type: application/json',
+                'Accept: application/json'
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $err = curl_error($curl);
+        curl_close($curl);
+
+        if ($err) {
+            logSMS($studentId, $body, 'failed', null);
+            return ['success' => false, 'message' => 'Infobip cURL Error: ' . $err];
+        }
+
+        if ($httpCode >= 200 && $httpCode < 300) {
+            $data = json_decode($response, true);
+            $msgId = $data['messages'][0]['messageId'] ?? 'unknown';
+            logSMS($studentId, $body, 'sent', $msgId);
+            return ['success' => true, 'message' => 'SMS sent successfully (Infobip ID: ' . $msgId . ')'];
+        } else {
+            logSMS($studentId, $body, 'failed', null);
+            return ['success' => false, 'message' => 'Infobip HTTP Error: ' . $httpCode . ' ' . $response];
+        }
+    } catch (\Exception $e) {
+        logSMS($studentId, $body, 'failed', null);
+        return ['success' => false, 'message' => 'Exception: ' . $e->getMessage()];
     }
 }
 
