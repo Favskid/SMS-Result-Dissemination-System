@@ -34,9 +34,14 @@ if (file_exists($envFile)) {
 
 // ─── Twilio SMS Configuration ──────────────────────────────────────────────
 // Now safely fetching from .env file!
-define('TWILIO_SID',   getenv('TWILIO_SID')   ?: '');
-define('TWILIO_TOKEN', getenv('TWILIO_TOKEN') ?: '');
-define('TWILIO_PHONE', getenv('TWILIO_PHONE') ?: '');
+// define('TWILIO_SID',   getenv('TWILIO_SID')   ?: '');
+// define('TWILIO_TOKEN', getenv('TWILIO_TOKEN') ?: '');
+// define('TWILIO_PHONE', getenv('TWILIO_PHONE') ?: '');
+
+// ─── Infobip SMS Configuration ─────────────────────────────────────────────
+define('INFOBIP_BASE_URL', getenv('INFOBIP_BASE_URL') ?: '');
+define('INFOBIP_API_KEY',  getenv('INFOBIP_API_KEY')  ?: '');
+define('INFOBIP_SENDER',   getenv('INFOBIP_SENDER')   ?: 'FULafia');
 
 // ─── Application Constants ─────────────────────────────────────────────────
 define('APP_NAME',    'FULafia Result System');
