@@ -154,11 +154,22 @@ require_once dirname(__DIR__) . '/includes/header.php';
                 <h6 class="mb-0 fw-semibold"><i class="bi bi-send me-2 text-primary"></i>Send Results</h6>
             </div>
             <div class="card-body">
-                <?php if (empty(TWILIO_SID)): ?>
+                <!--
+                <?php if (!defined('TWILIO_SID') || empty(TWILIO_SID)): ?>
                 <div class="alert alert-warning small">
                     <i class="bi bi-exclamation-triangle me-2"></i>
                     <strong>Twilio not configured.</strong> Set <code>TWILIO_SID</code>, <code>TWILIO_TOKEN</code>, and
                     <code>TWILIO_PHONE</code> (environment variables or in your server config) to enable live SMS sending.
+                    Results will still be logged as "failed" for testing.
+                </div>
+                <?php endif; ?>
+                -->
+
+                <?php if (empty(INFOBIP_API_KEY) || empty(INFOBIP_BASE_URL)): ?>
+                <div class="alert alert-warning small">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Infobip not configured.</strong> Set <code>INFOBIP_API_KEY</code> and
+                    <code>INFOBIP_BASE_URL</code> (in <code>.env</code> or server config) to enable live SMS sending.
                     Results will still be logged as "failed" for testing.
                 </div>
                 <?php endif; ?>
@@ -227,7 +238,7 @@ require_once dirname(__DIR__) . '/includes/header.php';
                     </div>
 
                     <button type="submit" class="btn btn-success w-100"
-                            onclick="return confirm('Send SMS results now? This will charge your Twilio account.')">
+                            onclick="return confirm('Send SMS results now? This will charge your Infobip account.')">
                         <i class="bi bi-send-fill me-2"></i>Send SMS Results Now
                     </button>
                 </form>
