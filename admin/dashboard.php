@@ -1,4 +1,5 @@
 <?php
+
 /**
  * admin/dashboard.php
  * Main admin dashboard showing key system statistics and recent SMS logs.
@@ -122,42 +123,42 @@ require_once dirname(__DIR__) . '/includes/header.php';
             </div>
             <div class="card-body p-0">
                 <?php if (empty($recentSMS)): ?>
-                <div class="p-4 text-center text-muted">
-                    <i class="bi bi-chat-square-dots fs-2 d-block mb-2 opacity-50"></i>
-                    No SMS messages sent yet.
-                </div>
+                    <div class="p-4 text-center text-muted">
+                        <i class="bi bi-chat-square-dots fs-2 d-block mb-2 opacity-50"></i>
+                        No SMS messages sent yet.
+                    </div>
                 <?php else: ?>
-                <div class="table-responsive">
-                    <table class="table table-sm mb-0">
-                        <thead>
-                            <tr>
-                                <th>Student</th>
-                                <th>Status</th>
-                                <th>Sent At</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($recentSMS as $log): ?>
-                            <tr>
-                                <td>
-                                    <div class="fw-medium small"><?= e($log['full_name']) ?></div>
-                                    <div class="text-muted" style="font-size:.75rem"><?= e($log['matric_no']) ?></div>
-                                </td>
-                                <td>
-                                    <?php if ($log['status'] === 'sent'): ?>
-                                    <span class="badge bg-success">Sent</span>
-                                    <?php elseif ($log['status'] === 'failed'): ?>
-                                    <span class="badge bg-danger">Failed</span>
-                                    <?php else: ?>
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="text-muted small"><?= date('d M Y, H:i', strtotime($log['date_sent'])) ?></td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Status</th>
+                                    <th>Sent At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($recentSMS as $log): ?>
+                                    <tr>
+                                        <td>
+                                            <div class="fw-medium small"><?= e($log['full_name']) ?></div>
+                                            <div class="text-muted" style="font-size:.75rem"><?= e($log['matric_no']) ?></div>
+                                        </td>
+                                        <td>
+                                            <?php if ($log['status'] === 'sent'): ?>
+                                                <span class="badge bg-success">Sent</span>
+                                            <?php elseif ($log['status'] === 'failed'): ?>
+                                                <span class="badge bg-danger">Failed</span>
+                                            <?php else: ?>
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="text-muted small"><?= date('d M Y, H:i', strtotime($log['date_sent'])) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
@@ -171,22 +172,22 @@ require_once dirname(__DIR__) . '/includes/header.php';
             </div>
             <div class="card-body p-0">
                 <?php if (empty($byDept)): ?>
-                <div class="p-4 text-center text-muted">
-                    <i class="bi bi-building fs-2 d-block mb-2 opacity-50"></i>
-                    No data yet.
-                </div>
+                    <div class="p-4 text-center text-muted">
+                        <i class="bi bi-building fs-2 d-block mb-2 opacity-50"></i>
+                        No data yet.
+                    </div>
                 <?php else: ?>
-                <ul class="list-group list-group-flush">
-                    <?php foreach ($byDept as $dept): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                        <div>
-                            <div class="small fw-medium"><?= e($dept['department']) ?></div>
-                            <div class="text-muted" style="font-size:.75rem"><?= $dept['student_count'] ?> students</div>
-                        </div>
-                        <span class="badge bg-primary rounded-pill"><?= $dept['total_results'] ?> entries</span>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
+                    <ul class="list-group list-group-flush">
+                        <?php foreach ($byDept as $dept): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <div class="small fw-medium"><?= e($dept['department']) ?></div>
+                                    <div class="text-muted" style="font-size:.75rem"><?= $dept['student_count'] ?> students</div>
+                                </div>
+                                <span class="badge bg-primary rounded-pill"><?= $dept['total_results'] ?> entries</span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 <?php endif; ?>
             </div>
         </div>
